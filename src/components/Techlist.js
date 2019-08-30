@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import TechItem from '../components/TechItem'
+import { parse } from 'uri-js';
 
 class TechList extends Component{
  /* static defaultProps = {
@@ -7,13 +8,27 @@ class TechList extends Component{
  } */
   state = {
     newTech : '',
-    techs: [
-      'NodeJS',
-      'ReactJS',
-      'React Native'
-    ]
+    techs: []
   }
+
+  // Executed right after component renders 
+  componentDidMount(){
+    const techs = localStorage.getItem('techs')
+    //First verification
+    if(techs){
+      this.setState({techs: JSON.parse(techs)})
+    }
+  }
+  // Executed right after props or state modification
+  componentDidUpdate(_, prevState){
+    if(prevState.techs !== this.state.techs){
+      localStorage.setItem('techs', JSON.stringify(this.state.techs))
+    }
+  }
+  // Executed right after component dies
+  componentWillUnmount(){
   
+  }
   handleInputChange = e => {
     this.setState({newTech: e.target.value})
   }
@@ -43,7 +58,6 @@ class TechList extends Component{
           onDelete={() => this.handleDelete(tech)}
         />
         ))}
-        <TechItem/>
         </ul>
         <input type="text" 
         onChange={this.handleInputChange} 
